@@ -2,15 +2,41 @@
 //TODO: Could probably create a general case of this class for use in a framework
 
 var InputProcessor = function (domElement, cameraController) {
-    this.inputs = {     moveForward: 87,    //W
+    this.inputBtns = {     moveForward: 87,    //W
                         moveBackward: 83,   //S
                         moveLeft: 65,       //A
                         moveRight: 68       //D
                         };
+    
+    this.camController = cameraController;
+    
+    this.inputs = [];
+    
+    //TODO: Maybe define an inputButton class, but that might be overkill for this
+    this.inputs.push( {     keyName:'moveForward',
+                            keyCode: 87, //W
+                            onPress: this.camController.onForwardPressed, 
+                            onRelease: this.camController.onForwardReleased } );
+    
+    this.inputs.push( {     keyName:'moveBackward',
+                            keyCode: 83, //S
+                            onPress: this.camController.onBackwardPressed, 
+                            onRelease: this.camController.onBackwardReleased } );
+    
+    this.inputs.push( {     keyName:'moveLeft',
+                            keyCode: 65, //A
+                            onPress: this.camController.onLeftPressed, 
+                            onRelease: this.camController.onLeftReleased } );
+    
+    this.inputs.push( {     keyName:'moveRight',
+                            keyCode: 68, //D
+                            onPress: this.camController.onRightPressed, 
+                            onRelease: this.camController.onRightReleased } );
     this.inputsPressed = [];
     
+    
 
-    this.camController = cameraController;
+    
     
     //Bind events to domElement (should probably be window for fullscreen stuff)
     domElement.addEventListener( 'keydown', this.onKeyDown.bind(this), false );
@@ -18,77 +44,36 @@ var InputProcessor = function (domElement, cameraController) {
 
 };
 
-
 //Process input based on currently pressed keys
 InputProcessor.prototype.update = function() {
     
-        //TODO: you could pair up the functions to call into
-        //this.inputs and then iterate through instead of doing
-        //all these if statements. Could be cleaner.
-    
-        if (this.inputsPressed[this.inputs.moveForward]){
-            this.camController.onForwardPressed();
-        } else {
-            this.camController.onForwardReleased();
-        }
-        if (this.inputsPressed[this.inputs.moveBackward]) {
-            this.camController.onBackwardPressed();
-        } else {
-            this.camController.onBackwardReleased();
-        }
-        if (this.inputsPressed[this.inputs.moveLeft]) {
-            this.camController.onLeftPressed();
-        } else {
-            this.camController.onLeftReleased();
-        }
-        if (this.inputsPressed[this.inputs.moveRight]) { 
-            this.camController.onRightPressed();
-        } else {
-            this.camController.onRightReleased();
-        }
-    
+        var arrLen = this.inputs.length;
+        for (var i = 0; i < arrLen; i++) {
+            if (this.inputsPressed[i]) {
+                this.inputs[i].onPress();
+            } else {
+                this.inputs[i].onRelease();
+            }
+        }      
 };
 
 InputProcessor.prototype.onKeyDown = function (event) {
-    switch (event.keyCode) {
-        case this.inputs.moveForward:
-            this.inputsPressed[this.inputs.moveForward] = true;
-            break;
-        case this.inputs.moveBackward:
-            this.inputsPressed[this.inputs.moveBackward] = true;
-            break;
-        case this.inputs.moveLeft:
-            this.inputsPressed[this.inputs.moveLeft] = true;
-            break;            
-        case this.inputs.moveRight:
-            this.inputsPressed[this.inputs.moveRight] = true;
-            break;          
-    }    
-    
-
+    var arrLen = this.inputs.length;
+    for (var i = 0; i < arrLen; i++) {
+        if (event.keyCode === this.inputs[i].keyCode) {
+            this.inputsPressed[i] = true;
+        
+        }
+    }
 };
 
 InputProcessor.prototype.onKeyUp = function(event) {
-    switch (event.keyCode) {
-        case this.inputs.moveForward:
-            this.inputsPressed[this.inputs.moveForward] = false;
-            break;
-        case this.inputs.moveBackward:
-            this.inputsPressed[this.inputs.moveBackward] = false;
-            break;
-        case this.inputs.moveLeft:
-            this.inputsPressed[this.inputs.moveLeft] = false;
-            break;            
-        case this.inputs.moveRight:
-            this.inputsPressed[this.inputs.moveRight] = false;
-            break;   
-    }     
-
-    for (keycode in this.inputs) {
-        if (!this.inputs.hasOwnProperty(keycode)) {
-            continue;
+    var arrLen = this.inputs.length;
+    for (var i = 0; i < arrLen; i++) {
+        if (event.keyCode === this.inputs[i].keyCode) {
+            this.inputsPressed[i] = false;
         }
-    }
+    }    
 };
 
 //InputProcessor.prototype.rebindKey

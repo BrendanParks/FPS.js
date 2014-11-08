@@ -134,6 +134,13 @@
             camController.update(delta);
                 
             colorcounter += 1;
+            
+            for (var i = 0; i < myScreen.shapes.length; i++) {
+                for (var j = 0; j < myScreen.shapes[i].length; j++) {
+                  myScreen.shapes[i][j].position.y = curTime*Math.sin(i); //1rad per sec
+                  //myScreen.shapes[i][j].rotation.y += 1 * delta; //1rad per sec
+                }
+            }               
 
             renderer.render( scene, camera );            
             
