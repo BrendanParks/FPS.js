@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        background-color: #297ea3;
+        margin: 0;
+        overflow: hidden;
+
+      }
+      #innerBody {
+        width: 50%;
+        height: 50%;
+        background-color: #7dc4ee;
+        margin-left: 50px;
+        margin-right: 50px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+
+      }
+
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 70%;
+      }
+    </style>
+  <!--	<meta http-equiv="refresh" content="3" > -->
+  </head>
+  <body>
+    <!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r57/three.min.js"></script> -->
+
+    <script src="../../threejs/build/three.js"></script>
+
+    <script type="text/javascript" src="../ThreeScreen.js"></script>
+    <div id="innerBody">
+
+      <script>
+
+        var orthoCamera, perspCamera, scene, renderer;
+        var camera;
+
+        var isShiftPressed = false;
+
+        function setupEmptyScene() {
+
+          var WIDTH = window.innerWidth , HEIGHT = window.innerHeight;
+          console.log("WIDTH IS " + WIDTH + " HEIGHT IS " + HEIGHT);
+          var VIEW_ANGLE = 45,
+          ASPECT = WIDTH / HEIGHT,
+          NEAR = 0.1,
+          FAR = 200000;
+
+          renderer = new THREE.WebGLRenderer();
+          //orthoCamera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT /2, HEIGHT / -2, 1, 25000);
+
+          var perspCamera = new THREE.PerspectiveCamera(
+              VIEW_ANGLE,
+              ASPECT,
+              NEAR,
+              FAR);
+          camera = perspCamera;
+
+          scene = new THREE.Scene();
+
+          scene.add(camera);
+
+          camera.position.z = 256;
+
+          renderer.setSize(WIDTH, HEIGHT);
+
+        }
+
+
+
+        function setupListeners() {
+
+
+          document.addEventListener( 'keydown', function() {
+            var val = 10;
+            if (isShiftPressed) val *= 10;
+            switch( event.keyCode ) {
+              case 90: camera.position.z += val; break;   //z
+              case 88: camera.position.z -= val; break;   //x
+              case 38: camera.position.y += val; break;   //up
+              case 40: camera.position.y -= val; break;   //down
+              case 37: camera.position.x -= val; break;   //left
+              case 39: camera.position.x += val; break;   //right
+              case 16: isShiftPressed = true; break;
+            }
+          }, false );
+
+          document.addEventListener( 'keyup', function() {
+            if (event.keyCode == 16) {
+              isShiftPressed = false;
+            }
+          }, false );
+
+          window.addEventListener( 'resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+          }, false );
+        }
+
+        var myScreen;
+        var init = function () {
+
+          setupEmptyScene();
+          setupListeners();
+
+
+          myScreen = new THRSCN.ThreeScreen(256,50);
+          myScreen.position = new THREE.Vector3(0,0,0);
+          scene.add(myScreen);
+
+          renderer.render( scene, camera );
+
+          document.body.appendChild(renderer.domElement);
+
+        }
+
+
+        var animate = function () {
+
+          requestAnimationFrame( animate );
+
+          //Random colors
+
+
+          for (var i = 0; i < myScreen.shapes.length; i++) {
+            for (var j = 0; j < myScreen.shapes[i].length; j++) {
+              myScreen.changeVoxelColor(i,j,Math.random() * 0xffff00);
+              myScreen.shapes[i][j].rotation.x += 0.01;
+              myScreen.shapes[i][j].rotation.y += 0.01;
+            }
+          }
+
+
+
+          renderer.render( scene, camera );
+
+        }
+
+
+
+        init();
+        animate();
+
+      </script>
+    </div>
+    <div class="center">Hello world</div>
+  </body>
+</html>

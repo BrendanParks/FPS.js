@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        background-color: #297ea3;
+        margin: 0;
+        overflow: hidden;
+
+      }
+      #innerBody {
+        width: 50%;
+        height: 50%;
+        background-color: #7dc4ee;
+        margin-left: 50px;
+        margin-right: 50px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+
+      }
+
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 70%;
+      }
+    </style>
+  <!--	<meta http-equiv="refresh" content="3" > -->
+  </head>
+  <body>
+    <script src="../../threejs/build/three.js"></script>
+    <script type="text/javascript" src="../EditorCamera.js"></script>
+    <script type="text/javascript" src="../ThreeScreenXAxis.js"></script>
+    <div id="innerBody">
+
+      <script>
+
+        var orthoCamera, perspCamera, scene, renderer;
+        var editorCamera;
+        var camera;
+
+        var isShiftPressed = false;
+
+        function setupEmptyScene() {
+
+          var WIDTH = window.innerWidth , HEIGHT = window.innerHeight;
+          console.log("WIDTH IS " + WIDTH + " HEIGHT IS " + HEIGHT);
+          var VIEW_ANGLE = 45,
+          ASPECT = WIDTH / HEIGHT,
+          NEAR = 0.1,
+          FAR = 200000;
+
+          renderer = new THREE.WebGLRenderer();
+            
+            editorCamera = new EditorCamera(VIEW_ANGLE,ASPECT,NEAR,FAR);
+            
+          camera = editorCamera;
+
+          scene = new THREE.Scene();
+
+          scene.add(camera);
+
+          camera.position.z = 250;
+
+          renderer.setSize(WIDTH, HEIGHT);
+
+        }
+
+
+        var camController;
+        function setupListeners() {
+
+          camController = new EditorCameraController(camera);
+          window.addEventListener( 'keydown', camController.onKeyDown.bind(camController), false );
+
+          window.addEventListener( 'keyup', camController.onKeyUp.bind(camController), false );
+
+          window.addEventListener( 'resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+          }, false );
+        }
+
+        var myScreen;
+        var init = function () {
+
+          setupEmptyScene();
+          setupListeners();
+
+
+          myScreen = new THRSCN.ThreeScreen(256,50);
+          myScreen.position = new THREE.Vector3(-50000,0,0);
+            
+            for (var i = 0; i < myScreen.shapes.length; i++) {
+                for (var j = 0; j < myScreen.shapes[i].length; j++) {
+                  myScreen.changeVoxelColor(i,j,Math.sin(colorcounter++) * 0xffffff);
+                  //myScreen.shapes[i][j].rotation.x += 1 * delta; //1rad per sec
+                  //myScreen.shapes[i][j].rotation.y += 1 * delta; //1rad per sec
+                }
+            }            
+            
+          scene.add(myScreen);
+            
+
+          renderer.render( scene, camera );
+
+          document.body.appendChild(renderer.domElement);
+
+        }
+
+        var delta = 0;
+        var fps = 60;
+          
+        //1000ms = 1 second. Need 1/60th of a second
+        var interval = 1000/ fps; 
+          
+        var curTime = Date.now();
+        var prevTime = Date.now();
+          
+        var clock = new THREE.Clock(true);
+          
+        var colorcounter = 0;
+          
+        var animate = function () {
+
+          requestAnimationFrame( animate );
+
+            curTime = Date.now();
+            delta = clock.getDelta();
+            
+            camController.update(delta);
+                
+            colorcounter += 1;
+
+            renderer.render( scene, camera );            
+            
+
+
+        }
+
+
+
+        init();
+        animate();
+
+      </script>
+    </div>
+    <div class="center">Hello world</div>
+  </body>
+</html>
