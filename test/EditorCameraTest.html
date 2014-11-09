@@ -31,6 +31,7 @@
   <body>
     <script src="../../threejs/build/three.js"></script>
     <script type="text/javascript" src="../EditorCamera.js"></script>
+    <script type="text/javascript" src="../InputProcessor.js"></script>
     <script type="text/javascript" src="../ThreeScreenXAxis.js"></script>
     <div id="innerBody">
 
@@ -68,20 +69,19 @@
         }
 
 
-        var camController;
+        var camController, inputProcessor;
         function setupListeners() {
 
-          camController = new EditorCameraController(camera);
-          window.addEventListener( 'keydown', camController.onKeyDown.bind(camController), false );
+            camController = new EditorCameraController(camera);
+        
+            inputProcessor = new InputProcessor(window, camController);
 
-          window.addEventListener( 'keyup', camController.onKeyUp.bind(camController), false );
+            window.addEventListener( 'resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
 
-          window.addEventListener( 'resize', function() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-
-            renderer.setSize( window.innerWidth, window.innerHeight );
-          }, false );
+                renderer.setSize( window.innerWidth, window.innerHeight );
+            }, false );
         }
 
         var myScreen;
@@ -131,6 +131,8 @@
             curTime = Date.now();
             delta = clock.getDelta();
             
+            
+            inputProcessor.update();
             camController.update(delta);
                 
             colorcounter += 1;
