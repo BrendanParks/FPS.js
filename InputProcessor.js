@@ -38,10 +38,6 @@ var InputProcessor = function (domElement, cameraController) {
                             onRelease: this.camController.onRightReleased.bind(this.camController) } );
     this.inputsPressed = [];
     
-    
-
-    
-    
     //Bind events to domElement (should probably be window for fullscreen stuff)
     domElement.addEventListener( 'keydown', this.onKeyDown.bind(this), false );
     domElement.addEventListener( 'keyup', this.onKeyUp.bind(this), false );
@@ -64,6 +60,7 @@ InputProcessor.prototype.update = function() {
 };
 
 InputProcessor.prototype.onKeyDown = function (event) {
+    event.preventDefault();
     var arrLen = this.inputs.length;
     for (var i = 0; i < arrLen; i++) {
         if (event.keyCode === this.inputs[i].keyCode) {
@@ -74,6 +71,7 @@ InputProcessor.prototype.onKeyDown = function (event) {
 };
 
 InputProcessor.prototype.onKeyUp = function(event) {
+    event.preventDefault();
     var arrLen = this.inputs.length;
     for (var i = 0; i < arrLen; i++) {
         if (event.keyCode === this.inputs[i].keyCode) {
