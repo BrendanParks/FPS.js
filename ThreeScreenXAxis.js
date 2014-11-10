@@ -34,7 +34,7 @@ THRSCN.ThreeScreen = function(width, height) {
                                       opacity: 0.5 }  );
 
 
-    var loc = new THREE.Vector3(0,0,0);
+    var loc = new THREE.Vector3(0,-3,0);
     for (var i = 0; i < width; i++) {
       for (var j = 0; j < height; j++) {
 

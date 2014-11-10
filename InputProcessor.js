@@ -14,28 +14,42 @@ var InputProcessor = function (domElement, cameraController) {
     
     this.inputs = [];
     
+    
+    this.inputIndex = {     moveForward: 0, //W
+                    moveBackward: 1,   //S
+                    moveLeft: 2,       //A
+                    moveRight: 3       //D
+                    };
+    
     //TODO: Maybe define an inputButton class, but that might be overkill for this.
     //TODO: Possibly separate the binding into a for loop after pushing.
     //TODO: Is it more effecient to do the binding here once or bind every frame update?
+    //TODO: The current solution for checking if two buttons are pressed is kind-of weak and
+    //      is possibly introducing unnecessary overhead. Set to -1 if none.
+    //      The overhead is possibly negligible so maybe don't worry about it
     this.inputs.push( {     keyName:'moveForward',
                             keyCode: 87, //W
                             onPress: this.camController.onForwardPressed.bind(this.camController), 
-                            onRelease: this.camController.onForwardReleased.bind(this.camController) } );
+                            onRelease: this.camController.onForwardReleased.bind(this.camController),
+                            cancelIfPressed: this.inputIndex.moveBackward } );
     
     this.inputs.push( {     keyName:'moveBackward',
                             keyCode: 83, //S
                             onPress: this.camController.onBackwardPressed.bind(this.camController), 
-                            onRelease: this.camController.onBackwardReleased.bind(this.camController) } );
+                            onRelease: this.camController.onBackwardReleased.bind(this.camController),
+                            cancelIfPressed: this.inputIndex.moveForward  } );
     
     this.inputs.push( {     keyName:'moveLeft',
                             keyCode: 65, //A
                             onPress: this.camController.onLeftPressed.bind(this.camController), 
-                            onRelease: this.camController.onLeftReleased.bind(this.camController) } );
+                            onRelease: this.camController.onLeftReleased.bind(this.camController),
+                            cancelIfPressed: this.inputIndex.moveRight } );
     
     this.inputs.push( {     keyName:'moveRight',
                             keyCode: 68, //D
                             onPress: this.camController.onRightPressed.bind(this.camController), 
-                            onRelease: this.camController.onRightReleased.bind(this.camController) } );
+                            onRelease: this.camController.onRightReleased.bind(this.camController),
+                            cancelIfPressed: this.inputIndex.moveLeft } );
     this.inputsPressed = [];
     
     //Bind events to domElement (should probably be window for fullscreen stuff)
@@ -47,13 +61,22 @@ var InputProcessor = function (domElement, cameraController) {
 //Process input based on currently pressed keys.
 //Don't forget to call this update before the one in EditorCamera!
 InputProcessor.prototype.update = function() {
+        
         var arrLen = this.inputs.length;
         for (var i = 0; i < arrLen; i++) {
             if (this.inputsPressed[i]) {
-                //this.inputs[i].onPress().bind(this.camController);
-                this.inputs[i].onPress();
+                console.log("Something pressed " + i);
+                console.log("Debug 1 " + this.inputs[i].cancelIfPressed);
+                console.log("Debug 2 " + this.inputsPressed[this.inputs[i].cancelIfPressed]);
+                //Simulate release if both buttons are pressed
+                if (this.inputs[i].cancelIfPressed >= 0 &&
+                    !this.inputsPressed[this.inputs[i].cancelIfPressed]) {
+                    this.inputs[i].onPress();
+                } else {
+                    console.log("Input cancelled. ");
+                    this.inputs[i].onRelease();
+                }
             } else {
-                //this.inputs[i].onRelease().bind(this.camController);
                 this.inputs[i].onRelease();
             }
         }      

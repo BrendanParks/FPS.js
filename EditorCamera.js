@@ -61,8 +61,8 @@ EditorCameraController.prototype.update = function (delta) {
     this.velocity.setY(this.velocity.y + this.acceleration.y * delta);
     this.velocity.setZ(this.velocity.z + this.acceleration.z * delta);
     
-    console.log("ACCEL X IS " + this.acceleration.x);
-    console.log("ACCEL Z IS " + this.acceleration.z);
+    //console.log("ACCEL X IS " + this.acceleration.x);
+    //console.log("ACCEL Z IS " + this.acceleration.z);
     //Ramp down velocity if acceleration is 0
     if (this.acceleration.x === 0)  
         this.velocity.x *= 0.9*delta;
@@ -97,9 +97,9 @@ EditorCameraController.prototype.setState = function(state) {
 EditorCameraController.prototype.onForwardPressed = function() {
     if (this.currentState === this.STATE.STILL) {
         this.setState(this.STATE.WALKING);
-        this.velocity.setZ(-this.WALK_START_SPEED);
-        this.acceleration.setZ(-this.WALK_ACCELERATION);
     }
+    this.velocity.setZ(-this.WALK_START_SPEED);
+    this.acceleration.setZ(-this.WALK_ACCELERATION);
 }
 EditorCameraController.prototype.onForwardReleased = function() {
     this.setState(this.STATE.STILL);
@@ -108,9 +108,9 @@ EditorCameraController.prototype.onForwardReleased = function() {
 EditorCameraController.prototype.onBackwardPressed = function() {
     if (this.currentState === this.STATE.STILL) {
         this.setState(this.STATE.WALKING);
-        this.velocity.setZ(this.WALK_START_SPEED);
-        this.acceleration.setZ(this.WALK_ACCELERATION);
     }
+    this.velocity.setZ(this.WALK_START_SPEED);
+    this.acceleration.setZ(this.WALK_ACCELERATION);
 }
 EditorCameraController.prototype.onBackwardReleased = function() {
     this.setState(this.STATE.STILL);
@@ -119,9 +119,10 @@ EditorCameraController.prototype.onBackwardReleased = function() {
 EditorCameraController.prototype.onLeftPressed = function() {
     if (this.currentState === this.STATE.STILL) {
         this.setState(this.STATE.WALKING);
-        this.velocity.setX(-this.WALK_START_SPEED);
-        this.acceleration.setX(-this.WALK_ACCELERATION);
     }
+    this.velocity.setX(-this.WALK_START_SPEED);
+    this.acceleration.setX(-this.WALK_ACCELERATION);    
+    
 }
 EditorCameraController.prototype.onLeftReleased = function() {
     this.setState(this.STATE.STILL);
@@ -130,9 +131,9 @@ EditorCameraController.prototype.onLeftReleased = function() {
 EditorCameraController.prototype.onRightPressed = function() {
     if (this.currentState === this.STATE.STILL) {
         this.setState(this.STATE.WALKING);
-        this.velocity.setX(this.WALK_START_SPEED);
-        this.acceleration.setX(this.WALK_ACCELERATION);
     }
+    this.velocity.setX(this.WALK_START_SPEED);
+    this.acceleration.setX(this.WALK_ACCELERATION);    
 }
 EditorCameraController.prototype.onRightReleased = function() {
     this.setState(this.STATE.STILL);
