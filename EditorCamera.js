@@ -23,7 +23,11 @@ var EditorCameraController = function (editorCamera) {
     this.velocity = new THREE.Vector3(0, 0, 0);
     this.acceleration = new THREE.Vector3(0,0,0); //Accel in x,y,z directions
 
-    console.log("MAX SPEED IS sup mello " + this.WALK_MAX_SPEED);
+    console.log("MAX SPEED IS " + this.WALK_MAX_SPEED);
+    
+    //TODO: Temporary variable for testing turning
+    this.turnAmount = 0;
+    
 
 
 };
@@ -42,12 +46,32 @@ EditorCameraController.prototype.STATE = { WALKING: 0,
 EditorCameraController.prototype.update = function (delta) {
     //Get state, update based on state
     
-    //Update pos, THEN modify velocity. (as in mult it by acceleration)
+    //Rotate cam, Update pos, THEN modify velocity. (as in mult it by acceleration)
     
     var curX = this.editorCamera.position.x;
     var curY = this.editorCamera.position.y;
     var curZ = this.editorCamera.position.z;
     
+    
+    //TODO: Temporary turning of camera here
+    this.editorCamera.rotation.y += this.turnAmount;
+    /*
+    
+    //Rotation stuff
+
+    //console.log("hey " + this.editorCamera.rotation.y + " turnAmount is " + this.turnAmount );
+    //TODO: Modify velocity based on rotation HERE!
+    var oldXVel = this.velocity.x;
+    var oldZVel = this.velocity.z;
+    var newXVel = Math.cos(this.editorCamera.rotation.y) * this.velocity.x;
+    //newXVel += oldZVel * Math.sin(this.editorCamera.rotation.y);
+    
+    var newZVel = Math.cos(this.editorCamera.rotation.y) * this.velocity.z;
+    //newZVel += oldXVel * Math.cos(this.editorCamera.rotation.y);
+    
+    this.velocity.setX(newXVel);
+    this.velocity.setZ(newZVel);
+    */
     
     //TODO: Replace with scale function?
     this.editorCamera.position.setX(curX + (this.velocity.x * delta));
@@ -60,6 +84,9 @@ EditorCameraController.prototype.update = function (delta) {
     this.velocity.setX(this.velocity.x + this.acceleration.x * delta);
     this.velocity.setY(this.velocity.y + this.acceleration.y * delta);
     this.velocity.setZ(this.velocity.z + this.acceleration.z * delta);
+    
+
+    
     
     //console.log("ACCEL X IS " + this.acceleration.x);
     //console.log("ACCEL Z IS " + this.acceleration.z);
@@ -78,6 +105,7 @@ EditorCameraController.prototype.update = function (delta) {
         this.velocity.setZ(this.WALK_MAX_SPEED);
     if (this.velocity.z < -this.WALK_MAX_SPEED) 
         this.velocity.setZ(-this.WALK_MAX_SPEED);
+    
 
 };
 
@@ -134,11 +162,28 @@ EditorCameraController.prototype.onRightPressed = function() {
     }
     this.velocity.setX(this.WALK_START_SPEED);
     this.acceleration.setX(this.WALK_ACCELERATION);    
+    
 }
 EditorCameraController.prototype.onRightReleased = function() {
     this.setState(this.STATE.STILL);
     this.acceleration.setX(0);
 }
+
+//TODO: Temporary functions for testing out turning
+EditorCameraController.prototype.onTurnLeftPressed = function() {
+    this.turnAmount = -0.025;
+}
+EditorCameraController.prototype.onTurnLeftReleased = function() {
+    this.turnAmount = 0;
+}
+EditorCameraController.prototype.onTurnRightPressed = function() {
+    this.turnAmount = 0.025;
+}
+EditorCameraController.prototype.onTurnRightReleased = function() {
+    this.turnAmount = 0;
+}
+
+
 
 EditorCameraController.prototype.printPos = function() {
     console.log("New pos is " + this.editorCamera.position.x + ", " 
