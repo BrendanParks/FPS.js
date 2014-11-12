@@ -56,30 +56,14 @@ EditorCameraController.prototype.update = function (delta) {
     //TODO: Temporary turning of camera here
     this.editorCamera.rotation.y += this.turnAmount * delta;
     
+    //Rotate the camera
     var rotY = this.editorCamera.rotation.y;
     
+    //Rotate X and Z velocities based on rotation
     var newXVel = sin(rotY)*this.velocity.z + cos(rotY)*this.velocity.x;
     var newZVel = cos(rotY)*this.velocity.z - sin(rotY)*this.velocity.x;
     this.velocity.setX(newXVel);
     this.velocity.setZ(newZVel);
-    
-    /*
-    
-    //Rotation stuff
-
-    //console.log("hey " + this.editorCamera.rotation.y + " turnAmount is " + this.turnAmount );
-    //TODO: Modify velocity based on rotation HERE!
-    var oldXVel = this.velocity.x;
-    var oldZVel = this.velocity.z;
-    var newXVel = Math.cos(this.editorCamera.rotation.y) * this.velocity.x;
-    //newXVel += oldZVel * Math.sin(this.editorCamera.rotation.y);
-    
-    var newZVel = Math.cos(this.editorCamera.rotation.y) * this.velocity.z;
-    //newZVel += oldXVel * Math.cos(this.editorCamera.rotation.y);
-    
-    this.velocity.setX(newXVel);
-    this.velocity.setZ(newZVel);
-    */
     
     //TODO: Replace with scale function?
     this.editorCamera.position.setX(curX + (this.velocity.x * delta));
