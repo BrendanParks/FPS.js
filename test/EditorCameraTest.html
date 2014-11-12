@@ -91,7 +91,7 @@
           setupListeners();
 
 
-          myScreen = new THRSCN.ThreeScreen(256,50);
+          myScreen = new THRSCN.ThreeScreen(100,100);
           myScreen.position = new THREE.Vector3(0,0,0);
             
             for (var i = 0; i < myScreen.shapes.length; i++) {
@@ -124,6 +124,25 @@
           
         var colorcounter = 0;
           
+        //var baseYPos = myScreen.shapes[i][j].position.y;
+        
+        var colorSine = function(sineOffset) {
+            var colorRed = Math.floor(((Math.sin(sineOffset) + 1) * 100));
+            var colorGreen = Math.floor(((Math.sin(sineOffset) + 1) * 100));
+            var colorBlue = Math.floor(((Math.sin(sineOffset) + 2) * 100));
+            if (colorBlue > 255) colorBlue = 255;
+            if (colorGreen > 255) colorGreen = 255;
+            if (colorRed > 255) colorRed = 255;
+
+            var newColor = 0;
+            newColor |= colorRed << 16;
+            newColor |= colorGreen << 8;
+            newColor |= colorBlue;
+
+            return newColor;
+        
+        }
+          
         var animate = function () {
 
           requestAnimationFrame( animate );
@@ -136,10 +155,20 @@
             camController.update(delta);
                 
             colorcounter += 1;
-            
+            var flip = false;
             for (var i = 0; i < myScreen.shapes.length; i++) {
                 for (var j = 0; j < myScreen.shapes[i].length; j++) {
-                  //myScreen.shapes[i][j].position.y = curTime*Math.sin(i); //1rad per sec
+                if (flip) {
+                    myScreen.shapes[i][j].position.y = -6 + Math.sin((curTime * 0.001) + (i*j*0.01)) * 0.6;
+                    myScreen.changeVoxelColor(i,j,colorSine(curTime*0.002 + (i*j*0.001)));
+                    flip = false;
+                } else { 
+                     myScreen.changeVoxelColor(i,j,colorSine(curTime*0.002 + 2*(i*j*0.001)));
+                     myScreen.shapes[i][j].position.y = -6 + Math.cos((curTime * 0.001 + (i*j*0.001)) + (i*j*0.01)) * 0.8;                    
+                flip = true;
+                }
+                 
+                    
                   //myScreen.shapes[i][j].rotation.y += 1 * delta; //1rad per sec
                 }
             }               

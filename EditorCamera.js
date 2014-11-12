@@ -54,7 +54,15 @@ EditorCameraController.prototype.update = function (delta) {
     
     
     //TODO: Temporary turning of camera here
-    this.editorCamera.rotation.y += this.turnAmount;
+    this.editorCamera.rotation.y += this.turnAmount * delta;
+    
+    var rotY = this.editorCamera.rotation.y;
+    
+    var newXVel = sin(rotY)*this.velocity.z + cos(rotY)*this.velocity.x;
+    var newZVel = cos(rotY)*this.velocity.z - sin(rotY)*this.velocity.x;
+    this.velocity.setX(newXVel);
+    this.velocity.setZ(newZVel);
+    
     /*
     
     //Rotation stuff
@@ -171,13 +179,13 @@ EditorCameraController.prototype.onRightReleased = function() {
 
 //TODO: Temporary functions for testing out turning
 EditorCameraController.prototype.onTurnLeftPressed = function() {
-    this.turnAmount = -0.025;
+    this.turnAmount = 1;
 }
 EditorCameraController.prototype.onTurnLeftReleased = function() {
     this.turnAmount = 0;
 }
 EditorCameraController.prototype.onTurnRightPressed = function() {
-    this.turnAmount = 0.025;
+    this.turnAmount = -1;
 }
 EditorCameraController.prototype.onTurnRightReleased = function() {
     this.turnAmount = 0;
@@ -185,7 +193,7 @@ EditorCameraController.prototype.onTurnRightReleased = function() {
 
 
 
-EditorCameraController.prototype.printPos = function() {
+EditorCameraController.prototype.printPosswdd = function() {
     console.log("New pos is " + this.editorCamera.position.x + ", " 
                 +  this.editorCamera.position.y + ", " 
                 +  this.editorCamera.position.z);

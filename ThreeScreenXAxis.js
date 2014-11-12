@@ -13,7 +13,7 @@ THRSCN.ThreeScreen = function(width, height) {
     const SEGMENTS = 4;
     const RINGS = 4;
 
-    const PADDING = 3;
+    const PADDING = 1;
 
     this.shapes = [];
 
@@ -34,15 +34,16 @@ THRSCN.ThreeScreen = function(width, height) {
                                       opacity: 0.5 }  );
 
 
-    var loc = new THREE.Vector3(0,-3,0);
+    var loc = new THREE.Vector3(-50,-3,50);
     for (var i = 0; i < width; i++) {
       for (var j = 0; j < height; j++) {
 
         this.shapes[i][j] = new THREE.Mesh(baseSphere,new THREE.MeshBasicMaterial({color:'red'}));
 
+        
         this.shapes[i][j].position
             .set(loc.x + ( PADDING*i ),loc.y ,loc.z + ( PADDING*j ));
-
+        
           
         this.add(this.shapes[i][j]);
       }
