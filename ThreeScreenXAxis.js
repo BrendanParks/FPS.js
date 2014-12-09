@@ -13,7 +13,7 @@ THRSCN.ThreeScreen = function(width, height) {
     const SEGMENTS = 4;
     const RINGS = 4;
 
-    const PADDING = 1;
+    const PADDING = 2;
 
     this.shapes = [];
 
@@ -26,7 +26,7 @@ THRSCN.ThreeScreen = function(width, height) {
     }
 
     //var baseSphere = new THREE.SphereGeometry( RADIUS,SEGMENTS,RINGS );
-    var baseSphere = new THREE.BoxGeometry( 1,1,1 );
+    var baseSphere = new THREE.BoxGeometry( 2,4,2 );
 
     var baseMaterial = new THREE.MeshLambertMaterial(  {color:'red',
                                       shininess: 40,

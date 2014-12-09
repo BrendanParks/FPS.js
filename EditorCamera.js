@@ -2,12 +2,8 @@
 function EditorCamera(viewAngle, aspect, near, far) {
     //Extend normal camera
     THREE.PerspectiveCamera.call(this, viewAngle, aspect, near, far);
-    
-    
-    
     //This should remain mostly static
-    
-    
+    this.eulerOrder = 'ZYX';
 }
 EditorCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 
@@ -15,6 +11,7 @@ EditorCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 var EditorCameraController = function (editorCamera) {
 
     this.editorCamera = editorCamera;
+    
 
     this.currentState = this.STATE.STILL;
     console.log("YO STATE STILL IS " + this.STATE.STILL);
@@ -22,11 +19,12 @@ var EditorCameraController = function (editorCamera) {
     //XYZ velocity and accel
     this.velocity = new THREE.Vector3(0, 0, 0);
     this.acceleration = new THREE.Vector3(0,0,0); //Accel in x,y,z directions
-
+ 
     console.log("MAX SPEED IS " + this.WALK_MAX_SPEED);
     
     //TODO: Temporary variable for testing turning
     this.turnAmount = 0;
+    this.lookAmount = 0;
     
 
 
@@ -52,16 +50,27 @@ EditorCameraController.prototype.update = function (delta) {
     var curY = this.editorCamera.position.y;
     var curZ = this.editorCamera.position.z;
     
+    var rotX = this.editorCamera.rotation.x;
+    //TODO: Temporary turning of camera here x = y, z = z
+    var newYRot =  -Math.cos(rotX)*this.turnAmount;
+    var newZRot = Math.sin(rotX)*this.turnAmount;    
     
-    //TODO: Temporary turning of camera here
-    this.editorCamera.rotation.y += this.turnAmount * delta;
+    
+    this.editorCamera.rotation.y += newYRot * delta;
+    this.editorCamera.rotation.z += newZRot * delta;
+    this.editorCamera.rotation.x += this.lookAmount * delta;
+    
+    //if (this.editorCamera.rotation.x > Math.PI / 2) this.editorCamera.rotation.x = Math.PI / 2;
+    //if (this.editorCamera.rotation.x < (3*Math.PI) / 2) this.editorCamera.rotation.x = (3*Math.PI) / 2;
     
     //Rotate the camera
     var rotY = this.editorCamera.rotation.y;
     
+    
     //Rotate X and Z velocities based on rotation
-    var newXVel = sin(rotY)*this.velocity.z + cos(rotY)*this.velocity.x;
-    var newZVel = cos(rotY)*this.velocity.z - sin(rotY)*this.velocity.x;
+    //This pretty much follows 2d rotation matrix http://en.wikipedia.org/wiki/Rotation_matrix
+    var newXVel = Math.sin(rotY)*this.velocity.z + Math.cos(rotY)*this.velocity.x;
+    var newZVel = Math.cos(rotY)*this.velocity.z - Math.sin(rotY)*this.velocity.x;
     this.velocity.setX(newXVel);
     this.velocity.setZ(newZVel);
     
@@ -174,6 +183,19 @@ EditorCameraController.prototype.onTurnRightPressed = function() {
 EditorCameraController.prototype.onTurnRightReleased = function() {
     this.turnAmount = 0;
 }
+EditorCameraController.prototype.onLookUpPressed = function() {
+    this.lookAmount = 1;
+}
+EditorCameraController.prototype.onLookUpReleased = function() {
+    this.lookAmount = 0;
+}
+EditorCameraController.prototype.onLookDownPressed = function() {
+    this.lookAmount = -1;
+}
+EditorCameraController.prototype.onLookDownReleased = function() {
+    this.lookAmount = 0;
+}
+
 
 
 

@@ -20,7 +20,9 @@ var InputProcessor = function (domElement, cameraController) {
                     moveLeft: 2,       //A
                     moveRight: 3,       //D
                     turnLeft: 4,
-                    turnRight: 5
+                    turnRight: 5,
+                    lookUp: 6,
+                    lookDown: 7
                     };
     
     //TODO: Maybe define an inputButton class, but that might be overkill for this.
@@ -63,6 +65,16 @@ var InputProcessor = function (domElement, cameraController) {
                             onPress: this.camController.onTurnRightPressed.bind(this.camController), 
                             onRelease: this.camController.onTurnRightReleased.bind(this.camController),
                             cancelIfPressed: this.inputIndex.turnLeft } );    
+    this.inputs.push( {     keyName:'lookUp',
+                            keyCode: 38, //Up arrow
+                            onPress: this.camController.onLookUpPressed.bind(this.camController), 
+                            onRelease: this.camController.onLookUpReleased.bind(this.camController),
+                            cancelIfPressed: this.inputIndex.lookDown } ); 
+    this.inputs.push( {     keyName:'lookDown',
+                            keyCode: 40, //Down arrow
+                            onPress: this.camController.onLookDownPressed.bind(this.camController), 
+                            onRelease: this.camController.onLookDownReleased.bind(this.camController),
+                            cancelIfPressed: this.inputIndex.lookUp } );   
     
     //TODO: Inputs by default are "undefined" according to the code, which
     //      only technically works because "undefined" doesn't equal "true"
